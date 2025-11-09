@@ -1,5 +1,5 @@
 import { Clock, Unlock, Lock, Trash2, Eye } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useWallet } from "@/hooks/useWallet";
 import { getCapsulesByWallet, deleteCapsule } from "@/lib/capsuleStorage";
 import { TimeCapsule } from "@/types/capsule";
@@ -18,25 +18,27 @@ export const CapsuleVault = () => {
   const [capsules, setCapsules] = useState<TimeCapsule[]>([]);
   const [selectedCapsule, setSelectedCapsule] = useState<TimeCapsule | null>(null);
 
-  const loadCapsules = () => {
+  const loadCapsules = useCallback(() => {
     if (address) {
       const userCapsules = getCapsulesByWallet(address);
       setCapsules(userCapsules);
     } else {
       setCapsules([]);
     }
-  };
+  }, [address]);
 
   useEffect(() => {
     loadCapsules();
-    
+  }, [loadCapsules]);
+
+  useEffect(() => {
     const handleCapsuleCreated = () => {
       loadCapsules();
     };
     
     window.addEventListener("capsule-created", handleCapsuleCreated);
     return () => window.removeEventListener("capsule-created", handleCapsuleCreated);
-  }, [address]);
+  }, [loadCapsules]);
 
   const handleDelete = (id: string) => {
     deleteCapsule(id);
