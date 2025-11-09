@@ -1,7 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { Wallet } from "lucide-react";
+import { Wallet, LogOut } from "lucide-react";
+import { useWallet } from "@/hooks/useWallet";
 
 export const Header = () => {
+  const { address, isConnecting, connectWallet, disconnectWallet, formatAddress } = useWallet();
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -14,10 +17,31 @@ export const Header = () => {
           </span>
         </div>
         
-        <Button variant="outline" className="gap-2 border-primary/50 hover:bg-primary/10 hover:border-primary">
-          <Wallet className="w-4 h-4" />
-          Connect Wallet
-        </Button>
+        {address ? (
+          <div className="flex items-center gap-2">
+            <div className="px-3 py-2 rounded-lg bg-primary/10 border border-primary/30">
+              <span className="text-sm font-mono text-primary">{formatAddress(address)}</span>
+            </div>
+            <Button 
+              variant="outline" 
+              size="icon"
+              onClick={disconnectWallet}
+              className="border-primary/50 hover:bg-primary/10 hover:border-primary"
+            >
+              <LogOut className="w-4 h-4" />
+            </Button>
+          </div>
+        ) : (
+          <Button 
+            variant="outline" 
+            className="gap-2 border-primary/50 hover:bg-primary/10 hover:border-primary"
+            onClick={connectWallet}
+            disabled={isConnecting}
+          >
+            <Wallet className="w-4 h-4" />
+            {isConnecting ? "Connecting..." : "Connect Wallet"}
+          </Button>
+        )}
       </div>
     </header>
   );

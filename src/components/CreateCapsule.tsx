@@ -5,23 +5,52 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Lock, Calendar } from "lucide-react";
 import { toast } from "sonner";
+import { useWallet } from "@/hooks/useWallet";
+import { saveCapsule } from "@/lib/capsuleStorage";
+import { TimeCapsule } from "@/types/capsule";
 
 export const CreateCapsule = () => {
   const [message, setMessage] = useState("");
   const [unlockDate, setUnlockDate] = useState("");
+  const { address } = useWallet();
 
   const handleCreate = () => {
+    if (!address) {
+      toast.error("Please connect your wallet first");
+      return;
+    }
+
     if (!message || !unlockDate) {
       toast.error("Please fill in all fields");
       return;
     }
+
+    const unlockDateTime = new Date(unlockDate);
+    if (unlockDateTime <= new Date()) {
+      toast.error("Unlock date must be in the future");
+      return;
+    }
+
+    const capsule: TimeCapsule = {
+      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      message,
+      unlockDate,
+      createdAt: new Date().toISOString(),
+      walletAddress: address,
+      isLocked: true,
+    };
+
+    saveCapsule(capsule);
     
     toast.success("Time capsule created and encrypted!", {
-      description: `Will unlock on ${new Date(unlockDate).toLocaleDateString()}`,
+      description: `Will unlock on ${unlockDateTime.toLocaleDateString()}`,
     });
     
     setMessage("");
     setUnlockDate("");
+    
+    // Trigger a custom event to refresh the vault
+    window.dispatchEvent(new Event("capsule-created"));
   };
 
   return (
