@@ -80,10 +80,51 @@ export default {
             height: "0",
           },
         },
+        "gear-spin": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
+        "gear-spin-reverse": {
+          "0%": { transform: "rotate(360deg)" },
+          "100%": { transform: "rotate(0deg)" },
+        },
+        "glow-pulse": {
+          "0%, 100%": { 
+            opacity: "0.6",
+            boxShadow: "0 0 20px hsl(var(--vault-glow) / 0.3)"
+          },
+          "50%": { 
+            opacity: "1",
+            boxShadow: "0 0 40px hsl(var(--vault-glow) / 0.6)"
+          },
+        },
+        "countdown-glow": {
+          "0%, 100%": { 
+            textShadow: "0 0 10px hsl(var(--countdown-glow) / 0.5)"
+          },
+          "50%": { 
+            textShadow: "0 0 20px hsl(var(--countdown-glow) / 0.8)"
+          },
+        },
+        "fade-in-up": {
+          "0%": {
+            opacity: "0",
+            transform: "translateY(20px)"
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translateY(0)"
+          }
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "gear-spin": "gear-spin 20s linear infinite",
+        "gear-spin-reverse": "gear-spin-reverse 15s linear infinite",
+        "glow-pulse": "glow-pulse 3s ease-in-out infinite",
+        "countdown-glow": "countdown-glow 2s ease-in-out infinite",
+        "fade-in-up": "fade-in-up 0.6s ease-out",
       },
     },
   },
